@@ -2,6 +2,7 @@ import NotesAPI from "../api/notes";
 import AuthAPI from "@/api/auth";
 import CatsAPI from "@/api/cats";
 import PostsAPI from "@/api/posts";
+import CommentsAPI from "@/api/comments";
 
 export default {
   loadUser({ commit }) {
@@ -76,6 +77,28 @@ export default {
   },
   async deletePost({ dispatch, commit }, id) {
     const res = await PostsAPI.delete(id);
+    return res;
+  },
+  async getComments({ commit }, postId) {
+    let comments;
+    try {
+      comments = await CommentsAPI.index(postId);
+      localStorage.setItem("comments" + postId, JSON.stringify(comments));
+    } catch (error) {
+      console.log(error);
+      comments = JSON.parse(localStorage.getItem("comments" + postId)) || [];
+    }
+    // commit("getPosts", { catId, posts }); // Commented for now. Don't see the need to have this using memory in state.
+    return comments;
+  },
+  async createComment({ dispatch, commit }, data) {
+    const res = await CommentsAPI.create(data);
+    // await dispatch("getCat", res.note_id);
+    // await dispatch("getCats");
+    return res;
+  },
+  async deleteComment({ dispatch, commit }, id) {
+    const res = await CommentsAPI.delete(id);
     return res;
   },
 

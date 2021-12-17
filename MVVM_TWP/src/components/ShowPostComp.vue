@@ -56,7 +56,7 @@
         </router-link>
         <div class="shadow-2 rounded-borders">
           <div
-            class="row items-center justify-between q-mb-md bg-primary text-white shadow-2 q-pa-md"
+            class="row items-center justify-between bg-primary text-white shadow-2 q-pa-md"
           >
             <div>
               <div
@@ -86,7 +86,107 @@
               />
             </div>
           </div>
-          <div class="q-pa-md text-justify" v-html="post.content.rendered" />
+          <div class="q-pa-md">
+            <div class="text-h5">Description</div>
+            <div class="q-pt-sm text-justify" v-html="post.content.rendered" />
+            <form v-if="$store.state.user" @submit.prevent="createComment">
+              <q-input
+                outlined
+                bottom-slots
+                v-model="comment"
+                label="Write a comment"
+              >
+                <template v-slot:before>
+                  <q-avatar>
+                    <img :src="$store.state.user.avatar['96']" />
+                  </q-avatar>
+                </template>
+
+                <template v-slot:after>
+                  <q-btn
+                    round
+                    dense
+                    flat
+                    icon="send"
+                    @click="createComment"
+                    :loading="submitting"
+                  />
+                </template>
+              </q-input>
+            </form>
+
+            <q-card
+              class="my-card q-mb-md"
+              flat
+              bordered
+              v-for="comment in comments"
+              :key="comment.id"
+            >
+              <q-item>
+                <q-item-section avatar>
+                  <q-avatar>
+                    <img :src="comment.author_avatar_urls['96']" />
+                  </q-avatar>
+                </q-item-section>
+
+                <q-item-section>
+                  <q-item-label>{{ comment.author_name }}</q-item-label>
+                  <q-item-label caption>
+                    {{
+                      this.timeDifference(Date.now(), new Date(comment.date))
+                    }}
+                  </q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-separator />
+
+              <q-card-section>
+                <div v-html="comment.content.rendered" />
+                <div
+                  v-if="
+                    comment.author === $store.state.user.id ||
+                    $store.state.user.roles.includes('administrator')
+                  "
+                >
+                  <q-btn flat>Edit</q-btn>
+                  <q-btn
+                    flat
+                    :disable="submitting"
+                    @click="removeComment(comment.id)"
+                  >
+                    Remove
+                  </q-btn>
+                </div>
+              </q-card-section>
+            </q-card>
+
+            <!-- <q-card class="my-card q-mb-md" flat bordered>
+              <q-item>
+                <q-item-section avatar>
+                  <q-avatar>
+                    <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+                  </q-avatar>
+                </q-item-section>
+
+                <q-item-section>
+                  <q-item-label>Title</q-item-label>
+                  <q-item-label caption> Subhead </q-item-label>
+                </q-item-section>
+              </q-item>
+
+              <q-separator />
+
+              <q-card-section>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque,
+                amet!
+                <div>
+                  <q-btn flat>Edit</q-btn>
+                  <q-btn flat>Remove</q-btn>
+                </div>
+              </q-card-section>
+            </q-card> -->
+          </div>
         </div>
       </div>
     </Container>
@@ -109,6 +209,8 @@ export default {
       content: "",
       post: null,
       catName: null,
+      comment: "",
+      comments: [],
     };
   },
   methods: {
@@ -240,12 +342,158 @@ export default {
       this.post = res;
       return res;
     },
+    async createComment() {
+      this.submitting = true;
+      const data = {
+        // author: this.$store.state.user.id,
+        content: this.comment,
+        post: this.$route.params.id,
+        // author_avatar_urls: this.$store.state.user.avatar,
+      };
+
+      try {
+        await this.$store.dispatch("createComment", data);
+        await this.loadComments();
+        this.submitting = false;
+        this.$q.notify({
+          progress: true,
+          message: "Comment created.",
+          // color: 'primary',
+          type: "positive",
+          actions: [
+            {
+              label: "Dismiss",
+              color: "white",
+              handler: () => {
+                /* ... */
+              },
+            },
+          ],
+        });
+      } catch (error) {
+        let message = "The request failed.";
+        // window.err = error;
+        // console.log(error);
+        this.submitting = false;
+        if (error.response) {
+          message = error.response.data.message || message;
+        }
+        this.$q.notify({
+          progress: true,
+          message: message,
+          html: true,
+          // color: 'primary',
+          type: "negative",
+          timeout: 10000,
+          actions: [
+            {
+              label: "Dismiss",
+              color: "white",
+              handler: () => {
+                /* ... */
+              },
+            },
+          ],
+        });
+      }
+    },
+    async loadComments() {
+      this.comment = "";
+      const res = await this.$store.dispatch(
+        "getComments",
+        this.$route.params.id
+      );
+      // console.log(res);
+      this.comments = res;
+    },
+    // https://stackoverflow.com/a/6109105
+    timeDifference(currentPlusOne, previous) {
+      var current = new Date(currentPlusOne);
+      current.setHours(current.getHours() - 1); // https://stackoverflow.com/a/4943116
+
+      var msPerMinute = 60 * 1000;
+      var msPerHour = msPerMinute * 60;
+      var msPerDay = msPerHour * 24;
+      var msPerMonth = msPerDay * 30;
+      var msPerYear = msPerDay * 365;
+
+      var elapsed = current - previous;
+
+      if (elapsed < msPerMinute) {
+        return Math.round(elapsed / 1000) + " seconds ago";
+      } else if (elapsed < msPerHour) {
+        return Math.round(elapsed / msPerMinute) + " minutes ago";
+      } else if (elapsed < msPerDay) {
+        return Math.round(elapsed / msPerHour) + " hours ago";
+      } else if (elapsed < msPerMonth) {
+        return "approximately " + Math.round(elapsed / msPerDay) + " days ago";
+      } else if (elapsed < msPerYear) {
+        return (
+          "approximately " + Math.round(elapsed / msPerMonth) + " months ago"
+        );
+      } else {
+        return (
+          "approximately " + Math.round(elapsed / msPerYear) + " years ago"
+        );
+      }
+    },
+    async removeComment(id) {
+      this.submitting = true;
+
+      try {
+        await this.$store.dispatch("deleteComment", id);
+        await this.loadComments();
+        this.submitting = false;
+        this.$q.notify({
+          progress: true,
+          message: "The comment has been deleted!",
+          // color: 'primary',
+          type: "positive",
+          actions: [
+            {
+              label: "Dismiss",
+              color: "white",
+              handler: () => {
+                /* ... */
+              },
+            },
+          ],
+        });
+      } catch (error) {
+        let message = "The request failed.";
+        // window.err = error;
+        // console.log(error);
+        this.submitting = false;
+        if (error.response) {
+          message = error.response.data.message || message;
+        }
+        this.$q.notify({
+          progress: true,
+          message: message,
+          html: true,
+          // color: 'primary',
+          type: "negative",
+          timeout: 10000,
+          actions: [
+            {
+              label: "Dismiss",
+              color: "white",
+              handler: () => {
+                /* ... */
+              },
+            },
+          ],
+        });
+      }
+    },
   },
   async created() {
     const res = await this.getPost();
 
     const catRes = await this.$store.dispatch("getCat", res.categories[0]);
     this.catName = catRes.name;
+
+    await this.loadComments();
   },
 };
 </script>

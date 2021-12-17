@@ -18,6 +18,11 @@ export default {
       url: `http://127.0.0.1:8000/wp-json/jwt-auth/v1/token`,
       data,
     });
-    return res.data;
+    const userRes = await axios({
+      method: "GET",
+      url: `http://127.0.0.1:8000/wp-json/wp/v2/users/${res.data.id}`,
+      data,
+    });
+    return { ...res.data, avatar: userRes.data.avatar_urls };
   },
 };
