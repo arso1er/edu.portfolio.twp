@@ -97,6 +97,10 @@ export default {
     // await dispatch("getCats");
     return res;
   },
+  async updateComment({ dispatch, commit }, { id, data }) {
+    const res = await CommentsAPI.update(id, data);
+    return res;
+  },
   async deleteComment({ dispatch, commit }, id) {
     const res = await CommentsAPI.delete(id);
     return res;

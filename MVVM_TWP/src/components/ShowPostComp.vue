@@ -46,6 +46,36 @@
       </div>
 
       <div v-else-if="post">
+        <Modal v-if="showCommentModal" @close="toggleModal">
+          <form v-if="$store.state.user" @submit.prevent="editCommentSubmit">
+            <q-input
+              outlined
+              bottom-slots
+              v-model="currentComment.content"
+              label="Comment"
+            >
+              <template v-slot:before>
+                <q-avatar>
+                  <img :src="currentComment.avatar" />
+                </q-avatar>
+              </template>
+            </q-input>
+            <div>
+              <q-btn flat @click="toggleModal" :disable="submitting">
+                Cancel
+              </q-btn>
+              <q-btn
+                flat
+                color="primary"
+                :disable="submitting"
+                :loading="submitting"
+                @click="editCommentSubmit"
+              >
+                Submit
+              </q-btn>
+            </div>
+          </form>
+        </Modal>
         <router-link to="/">
           <div class="q-mt-md q-mb-md">
             <!-- <q-icon name="west" size="xs" /> Back to my notes -->
@@ -149,7 +179,7 @@
                     $store.state.user.roles.includes('administrator')
                   "
                 >
-                  <q-btn flat>Edit</q-btn>
+                  <q-btn flat @click="editComment(comment)">Edit</q-btn>
                   <q-btn
                     flat
                     :disable="submitting"
@@ -195,11 +225,13 @@
 
 <script>
 import Container from "@/components/Container.vue";
+import Modal from "@/components/CommentModal.vue";
 
 export default {
   name: "ShowPostComp",
   components: {
     Container,
+    Modal,
   },
   data() {
     return {
@@ -211,6 +243,12 @@ export default {
       catName: null,
       comment: "",
       comments: [],
+      showCommentModal: false,
+      currentComment: {
+        id: "",
+        avatar: "",
+        content: "",
+      },
     };
   },
   methods: {
@@ -464,6 +502,76 @@ export default {
         // window.err = error;
         // console.log(error);
         this.submitting = false;
+        if (error.response) {
+          message = error.response.data.message || message;
+        }
+        this.$q.notify({
+          progress: true,
+          message: message,
+          html: true,
+          // color: 'primary',
+          type: "negative",
+          timeout: 10000,
+          actions: [
+            {
+              label: "Dismiss",
+              color: "white",
+              handler: () => {
+                /* ... */
+              },
+            },
+          ],
+        });
+      }
+    },
+    toggleModal() {
+      this.showCommentModal = !this.showCommentModal;
+    },
+    editComment(comment) {
+      this.currentComment = {
+        id: comment.id,
+        avatar: comment.author_avatar_urls["96"],
+        content: comment.content.rendered,
+      };
+      this.toggleModal();
+      // console.log(comment);
+    },
+    async editCommentSubmit() {
+      // console.log(this.currentComment);
+      this.submitting = true;
+
+      try {
+        const res = await this.$store.dispatch("updateComment", {
+          id: this.currentComment.id,
+          data: {
+            content: this.currentComment.content,
+          },
+        });
+        // console.log(res);
+        await this.loadComments();
+        this.submitting = false;
+        this.toggleModal();
+        this.$q.notify({
+          progress: true,
+          message: "The comment has been updated!",
+          // color: 'primary',
+          type: "positive",
+          actions: [
+            {
+              label: "Dismiss",
+              color: "white",
+              handler: () => {
+                /* ... */
+              },
+            },
+          ],
+        });
+      } catch (error) {
+        let message = "The request failed.";
+        // window.err = error;
+        // console.log(error);
+        this.submitting = false;
+        this.toggleModal();
         if (error.response) {
           message = error.response.data.message || message;
         }

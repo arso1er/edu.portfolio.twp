@@ -1,69 +1,71 @@
 <template>
-  <div>
-    <h3>Register</h3>
-    <form @submit.prevent="handleSubmit">
-      <q-input
-        :rules="[(val) => !!val || 'Username is required']"
-        ref="usernameRef"
-        v-model="username"
-        class="q-mt-sm"
-        outlined
-        label="Username"
-      />
+  <q-page padding>
+    <Container style="max-width: 700px">
+      <h3>Register</h3>
+      <form @submit.prevent="handleSubmit">
+        <q-input
+          :rules="[(val) => !!val || 'Username is required']"
+          ref="usernameRef"
+          v-model="username"
+          class="q-mt-sm"
+          outlined
+          label="Username"
+        />
 
-      <q-input
-        :rules="[
-          (val) =>
-            /\S+@\S+\.\S+/.test(val) ||
-            'Email required. Please add a valid email.',
-        ]"
-        ref="emailRef"
-        v-model="email"
-        class="q-mt-sm"
-        outlined
-        label="Email"
-      />
+        <q-input
+          :rules="[
+            (val) =>
+              /\S+@\S+\.\S+/.test(val) ||
+              'Email required. Please add a valid email.',
+          ]"
+          ref="emailRef"
+          v-model="email"
+          class="q-mt-sm"
+          outlined
+          label="Email"
+        />
 
-      <q-input
-        :rules="[(val) => !!val || 'Password is required']"
-        type="password"
-        ref="passwordRef"
-        v-model="password"
-        class="q-mt-sm"
-        outlined
-        label="Password"
-      />
+        <q-input
+          :rules="[(val) => !!val || 'Password is required']"
+          type="password"
+          ref="passwordRef"
+          v-model="password"
+          class="q-mt-sm"
+          outlined
+          label="Password"
+        />
 
-      <!-- <q-card flat bordered class="q-mt-sm">
+        <!-- <q-card flat bordered class="q-mt-sm">
           <q-editor v-model="note.content" min-height="5rem" />
         </q-card> -->
 
-      <div class="q-mt-md">
-        <q-btn color="grey" to="/" type="reset" :disable="submitting">
-          Cancel
-        </q-btn>
-        <q-btn
-          class="q-ml-sm"
-          color="positive"
-          type="submit"
-          :disable="submitting"
-        >
-          <q-spinner
-            v-if="submitting"
-            class="q-mr-sm"
-            color="white"
-            size="1em"
-            :thickness="3"
-          />
-          Register
-        </q-btn>
-      </div>
-    </form>
-  </div>
+        <div class="q-mt-md">
+          <q-btn color="grey" to="/" type="reset" :disable="submitting">
+            Cancel
+          </q-btn>
+          <q-btn
+            class="q-ml-sm"
+            color="positive"
+            type="submit"
+            :disable="submitting"
+          >
+            <q-spinner
+              v-if="submitting"
+              class="q-mr-sm"
+              color="white"
+              size="1em"
+              :thickness="3"
+            />
+            Register
+          </q-btn>
+        </div>
+      </form>
+    </Container>
+  </q-page>
 </template>
 
 <script>
-// import Container from "@/components/Container.vue";
+import Container from "@/components/Container.vue";
 import AuthAPI from "@/api/auth";
 
 export default {
@@ -77,7 +79,7 @@ export default {
     };
   },
   components: {
-    // Container,
+    Container,
   },
   methods: {
     async handleSubmit() {

@@ -1,5 +1,5 @@
 <template>
-  <q-page padding class="">
+  <q-page padding v-if="$store.state.user">
     <Container>
       <div class="twp-cats">
         <Cat v-for="cat in $store.state.cats" :key="cat.id" :cat="cat" />
@@ -21,16 +21,18 @@
       </router-link>
     </q-page-sticky>
   </q-page>
+  <LoginComp v-else />
 </template>
 
 <script>
 // @ is an alias to /src
 import Container from "@/components/Container.vue";
 import Cat from "@/components/Cat.vue";
+import LoginComp from "@/components/LoginComp.vue";
 
 export default {
   name: "Home",
-  components: { Container, Cat },
+  components: { Container, Cat, LoginComp },
   async mounted() {
     await this.$store.dispatch("getCats");
   },

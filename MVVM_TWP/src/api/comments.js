@@ -32,15 +32,15 @@ export default {
   //     // console.log(res.data);
   //     return res.data;
   //   },
-  //   async update(id, data) {
-  //     const res = await axios({
-  //       method: "POST",
-  //       url: apiBaseURL + `/${id}`,
-  //       data,
-  //     });
-  //     // console.log(res.data);
-  //     return res.data;
-  //   },
+  async update(id, data) {
+    const res = await axios({
+      method: "POST",
+      url: apiBaseURL + `/${id}`,
+      data,
+    });
+    // console.log(res.data);
+    return res.data;
+  },
   async delete(id) {
     const res = await axios({
       method: "DELETE",
