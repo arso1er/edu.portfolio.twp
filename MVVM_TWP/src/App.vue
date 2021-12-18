@@ -27,13 +27,12 @@
   </q-layout>
 </template>
 
-<style>
-/* * {
-  word-break: break-all;
-} */
+<style lang="scss">
+$child: inherit;
+
 a {
-  color: inherit;
-  text-decoration: inherit;
+  color: $child;
+  text-decoration: $child;
 }
 </style>
 

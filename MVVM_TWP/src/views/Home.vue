@@ -77,10 +77,14 @@ export default {
 };
 </script>
 
-<style>
-.twp-cats,
-.twp-cats > div {
+<style lang="scss">
+.twp-cats {
   display: flex;
+}
+.twp-cats {
+  > div {
+    display: flex;
+  }
 }
 /* .twp-cats > div .my-card { */
 .my-card {

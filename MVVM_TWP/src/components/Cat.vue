@@ -191,8 +191,9 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+$minH: 50px;
 .twp-draggable {
-  min-height: 50px; /* Needed to be able to drag to empty column */
+  min-height: $minH; /* Needed to be able to drag to empty column */
 }
 </style>
