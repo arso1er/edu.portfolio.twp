@@ -1,5 +1,11 @@
 <template>
-  <q-page padding>
+  <q-spinner-audio
+    v-if="!mounted"
+    class="fixed-center"
+    color="primary"
+    size="4em"
+  />
+  <q-page padding v-if="mounted && post">
     <Container style="max-width: 700px">
       <div v-if="showEdit" class="q-mt-md">
         <form @submit.prevent="handleSubmit">
@@ -221,20 +227,24 @@
       </div>
     </Container>
   </q-page>
+  <Error404 v-if="mounted && !post" />
 </template>
 
 <script>
 import Container from "@/components/Container.vue";
 import Modal from "@/components/CommentModal.vue";
+import Error404 from "@/views/Error404.vue";
 
 export default {
   name: "ShowPostComp",
   components: {
     Container,
     Modal,
+    Error404,
   },
   data() {
     return {
+      mounted: false,
       showEdit: false,
       submitting: false,
       title: "",
@@ -596,12 +606,17 @@ export default {
     },
   },
   async created() {
-    const res = await this.getPost();
+    try {
+      const res = await this.getPost();
 
-    const catRes = await this.$store.dispatch("getCat", res.categories[0]);
-    this.catName = catRes.name;
+      const catRes = await this.$store.dispatch("getCat", res.categories[0]);
+      this.catName = catRes.name;
 
-    await this.loadComments();
+      await this.loadComments();
+      this.mounted = true;
+    } catch (error) {
+      this.mounted = true;
+    }
   },
 };
 </script>

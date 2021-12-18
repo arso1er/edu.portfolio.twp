@@ -41,6 +41,12 @@ const routes = [
     name: "ShowPost",
     component: () => import("../views/ShowPost.vue"),
   },
+  // Always leave this as last one,
+  // but you can also remove it
+  {
+    path: "/:catchAll(.*)*",
+    component: () => import("../views/Error404.vue"),
+  },
 ];
 
 const router = createRouter({
