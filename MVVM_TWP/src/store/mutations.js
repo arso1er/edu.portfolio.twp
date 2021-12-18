@@ -14,6 +14,7 @@ export default {
   },
   getPosts(state, { catId, posts }) {
     state["posts" + catId] = posts;
+    localStorage.setItem("posts" + catId, JSON.stringify(posts)); // For order persist from localStorage (draggable). Could've done it elsewhere, but I like it here.
   },
 
   getNotes(state, notes) {

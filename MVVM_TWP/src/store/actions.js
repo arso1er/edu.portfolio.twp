@@ -61,6 +61,9 @@ export default {
     }
     commit("getPosts", { catId, posts });
   },
+  setPosts({ commit }, { catId, posts }) {
+    commit("getPosts", { catId, posts });
+  },
   async createPost({ dispatch, commit }, data) {
     const res = await PostsAPI.create(data);
     // await dispatch("getCat", res.note_id);

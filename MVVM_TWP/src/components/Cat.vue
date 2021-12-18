@@ -34,19 +34,25 @@
       class="q-pt-sm twp-task-wrapper"
       v-if="$store.state['posts' + cat.id]"
     >
-      <router-link
-        :to="{ name: 'ShowPost', params: { id: post.id } }"
-        v-for="post in $store.state['posts' + cat.id]"
-        :key="post.id"
+      <draggable
+        v-model="catPosts"
+        item-key="id"
+        @add="handleAdd"
+        @remove="handleRemove"
+        class="column q-col-gutter-md twp-draggable"
+        group="posts"
       >
-        <div class="twp-task">
-          {{ post.title.rendered }}
-        </div>
-      </router-link>
-      <!-- <div class="twp-task">Add to calendar</div>
-      <div class="twp-task">Add to calendar</div>
-      <div class="twp-task">Add to calendar</div>
-      <div class="twp-task">Add to calendar</div> -->
+        <template #item="{ element }">
+          <router-link
+            :to="{ name: 'ShowPost', params: { id: element.id } }"
+            :data-id="element.id"
+          >
+            <div class="twp-task">
+              {{ element.title.rendered }}
+            </div>
+          </router-link>
+        </template>
+      </draggable>
     </q-card-section>
 
     <q-separator />
@@ -60,6 +66,7 @@
 </template>
 
 <script>
+import draggable from "vuedraggable"; // https://github.com/SortableJS/vue.draggable.next
 export default {
   name: "Cat",
   props: {
@@ -67,6 +74,9 @@ export default {
       type: Object,
       default: () => ({}),
     },
+  },
+  components: {
+    draggable,
   },
   data() {
     return {};
@@ -119,10 +129,70 @@ export default {
         });
       }
     },
+    async handleAdd(evt) {
+      // When added, update post's category
+      await this.$store.dispatch("updatePost", {
+        id: evt.item.dataset.id,
+        data: {
+          categories: [+this.cat.id],
+        },
+      });
+
+      // update localStorage
+      localStorage.setItem(
+        "posts" + this.cat.id,
+        JSON.stringify(this.$store.state["posts" + this.cat.id])
+      );
+    },
+    handleRemove(evt) {
+      // update localStorage
+      localStorage.setItem(
+        "posts" + this.cat.id,
+        JSON.stringify(this.$store.state["posts" + this.cat.id])
+      );
+    },
   },
   async mounted() {
+    // await this.$store.dispatch("getPosts", this.cat.id);
+
+    // https://stackoverflow.com/a/44063445
+    const prevPosts = JSON.parse(
+      localStorage.getItem("posts" + this.cat.id)
+    ) || [...this.$store.state["posts" + this.cat.id]];
     await this.$store.dispatch("getPosts", this.cat.id);
-    // console.log(this.$store.state);
+
+    const newPosts = [...this.$store.state["posts" + this.cat.id]];
+
+    const prevPostsFlat = prevPosts.map((prevPost) => prevPost.id);
+    newPosts.sort(function (a, b) {
+      // console.log(a);
+      // console.log(b);
+      // https://stackoverflow.com/a/6974105
+      // https://www.w3schools.com/js/js_array_sort.asp
+      if (!prevPostsFlat.includes(a.id) && prevPostsFlat.includes(b.id))
+        return 1;
+      if (prevPostsFlat.includes(a.id) && !prevPostsFlat.includes(b.id))
+        return -1;
+      return prevPostsFlat.indexOf(a.id) - prevPostsFlat.indexOf(b.id);
+    });
+    // console.log(newPosts);
+    this.$store.dispatch("setPosts", { catId: this.cat.id, posts: newPosts });
+  },
+  computed: {
+    catPosts: {
+      get() {
+        return this.$store.state["posts" + this.cat.id];
+      },
+      set(value) {
+        this.$store.dispatch("setPosts", { catId: this.cat.id, posts: value });
+      },
+    },
   },
 };
 </script>
+
+<style scoped>
+.twp-draggable {
+  min-height: 50px; /* Needed to be able to drag to empty column */
+}
+</style>

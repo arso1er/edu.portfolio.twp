@@ -54,7 +54,7 @@ export default {
   background: #e0e0e0;
   border-radius: 6px;
 }
-.twp-task-wrapper > a:not(:last-child) > div {
+/* .twp-task-wrapper > div > a:not(:last-child) > div {
   margin-bottom: 12px;
-}
+} */
 </style>
