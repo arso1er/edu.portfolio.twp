@@ -31,6 +31,9 @@ export default {
     }
     commit("getCats", cats);
   },
+  setCats({ commit }, cats) {
+    commit("getCats", cats);
+  },
   async createCat({ dispatch, commit }, data) {
     const res = await CatsAPI.create(data);
     // await dispatch("getCat", res.note_id);
