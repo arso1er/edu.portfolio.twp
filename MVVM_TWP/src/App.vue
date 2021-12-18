@@ -11,9 +11,9 @@
           <q-btn stretch flat color="white" label="Logout" @click="logout" />
         </div>
         <div v-else>
-          <!-- <router-link to="/register">
+          <router-link to="/register">
             <q-btn stretch flat color="white" label="Register" />
-          </router-link> -->
+          </router-link>
           <router-link to="/login">
             <q-btn stretch flat color="white" label="Login" />
           </router-link>

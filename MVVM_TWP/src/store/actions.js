@@ -1,4 +1,3 @@
-import NotesAPI from "../api/notes";
 import AuthAPI from "@/api/auth";
 import CatsAPI from "@/api/cats";
 import PostsAPI from "@/api/posts";
@@ -110,78 +109,5 @@ export default {
   async deleteComment({ dispatch, commit }, id) {
     const res = await CommentsAPI.delete(id);
     return res;
-  },
-
-  async getNotes({ commit }) {
-    let notes;
-    try {
-      notes = await NotesAPI.index();
-      localStorage.setItem("savedNotes", JSON.stringify(notes));
-    } catch (error) {
-      console.log(error);
-      notes = JSON.parse(localStorage.getItem("savedNotes")) || [];
-    }
-    commit("getNotes", notes);
-  },
-  async getNote({ commit }, id) {
-    // https://stackoverflow.com/a/49998565
-    let note;
-    try {
-      note = await NotesAPI.show(id);
-      const singleNotes = JSON.parse(localStorage.getItem("singleNotes")) || [];
-      if (note) singleNotes.push(note);
-      localStorage.setItem("singleNotes", JSON.stringify(singleNotes));
-    } catch (error) {
-      console.log(error);
-      const singleNotes = JSON.parse(localStorage.getItem("singleNotes")) || [];
-      singleNotes.forEach((singleNote) => {
-        if (singleNote._id === id) note = { ...singleNote };
-      });
-      if (!note) {
-        const notes = JSON.parse(localStorage.getItem("savedNotes")) || [];
-        notes.forEach((singleNote) => {
-          if (singleNote._id === id) note = { ...singleNote };
-        });
-      }
-    }
-
-    if (!note) {
-      return;
-    }
-
-    commit("getNote", note);
-    commit("setEditNoteTitle", note.title);
-    commit("setEditNoteContent", note.content[0]);
-  },
-  setEditNoteTitle({ commit }, newValue) {
-    commit("setEditNoteTitle", newValue);
-  },
-  setEditNoteContent({ commit }, newValue) {
-    commit("setEditNoteContent", newValue);
-  },
-  // https://vuex.vuejs.org/guide/actions.html#composing-actions
-  async updateNote({ dispatch, commit }, { id, data }) {
-    const res = await NotesAPI.update(id, data);
-    await dispatch("getNote", res.note_id);
-    await dispatch("getNotes");
-    return res;
-  },
-  async createNote({ dispatch, commit }, { data }) {
-    const res = await NotesAPI.create(data);
-    await dispatch("getNote", res.note_id);
-    await dispatch("getNotes");
-    return res;
-  },
-  async deleteNote({ dispatch, commit }, id) {
-    const res = await NotesAPI.delete(id);
-    await dispatch("getNotes");
-    return res;
-  },
-
-  reverseNotes({ commit }) {
-    commit("reverseNotes");
-  },
-  setNotes({ commit }, newValue) {
-    commit("setNotes", newValue);
   },
 };

@@ -105,30 +105,31 @@ export default {
         username: this.username,
         email: this.email,
         password: this.password,
+        roles: ["editor"],
       };
 
       try {
         const res = await AuthAPI.register(data);
         // const logRes = await AuthAPI.login(data);
-        console.log(res);
-        window.t = res;
+        // console.log(res);
+        // window.t = res;
         this.submitting = false;
-        // this.$router.push(`/`);
-        // this.$q.notify({
-        //   progress: true,
-        //   message: res.message,
-        //   // color: 'primary',
-        //   type: "positive",
-        //   actions: [
-        //     {
-        //       label: "Dismiss",
-        //       color: "white",
-        //       handler: () => {
-        //         /* ... */
-        //       },
-        //     },
-        //   ],
-        // });
+        this.$router.push(`/login`);
+        this.$q.notify({
+          progress: true,
+          message: "User created. Please log in.",
+          // color: 'primary',
+          type: "positive",
+          actions: [
+            {
+              label: "Dismiss",
+              color: "white",
+              handler: () => {
+                /* ... */
+              },
+            },
+          ],
+        });
       } catch (error) {
         let message = "The request failed.";
         window.err = error;

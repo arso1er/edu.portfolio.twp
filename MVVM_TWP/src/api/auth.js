@@ -4,15 +4,33 @@ import axios from "axios";
 const apiBaseURL = "http://127.0.0.1:8000/?rest_route=/simple-jwt-login/v1";
 
 export default {
-  async register(data) {
-    const { email, password, user_login } = data;
+  async getAdminToken() {
+    const data = {
+      username: "admin",
+      password: "admin",
+    };
     const res = await axios({
       method: "POST",
-      url: `${apiBaseURL}/users&email=${email}&password=${password}&user_login=${user_login}`,
+      url: `http://127.0.0.1:8000/wp-json/jwt-auth/v1/token`,
+      data,
     });
-    return res.data;
+    return res.data.token;
+  },
+  async register(data) {
+    const token = await this.getAdminToken();
+    const resRegister = await axios({
+      method: "POST",
+      url: `http://127.0.0.1:8000/wp-json/wp/v2/users`,
+      data,
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    // console.log(resRegister.data);
+    // await this.login(data);
+    return resRegister.data;
   },
   async login(data) {
+    const token = await this.getAdminToken();
+
     const res = await axios({
       method: "POST",
       url: `http://127.0.0.1:8000/wp-json/jwt-auth/v1/token`,
@@ -22,6 +40,7 @@ export default {
       method: "GET",
       url: `http://127.0.0.1:8000/wp-json/wp/v2/users/${res.data.id}`,
       data,
+      headers: { Authorization: `Bearer ${token}` },
     });
     return { ...res.data, avatar: userRes.data.avatar_urls };
   },
