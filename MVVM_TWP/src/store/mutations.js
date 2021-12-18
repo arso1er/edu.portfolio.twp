@@ -11,6 +11,7 @@ export default {
   },
   getCats(state, cats) {
     state.cats = cats;
+    localStorage.setItem("cats", JSON.stringify(cats)); // For order persist from localStorage (draggable). Could've done it elsewhere, but it seems to not be working in home.vue.
   },
   getPosts(state, { catId, posts }) {
     state["posts" + catId] = posts;

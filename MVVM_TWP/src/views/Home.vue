@@ -2,13 +2,7 @@
   <q-page padding v-if="$store.state.user">
     <Container>
       <div class="twp-cats">
-        <draggable
-          v-model="cats"
-          item-key="id"
-          class=""
-          group="cats"
-          @end="dragEnd"
-        >
+        <draggable v-model="cats" item-key="id" class="" group="cats">
           <template #item="{ element }">
             <Cat :cat="element" />
           </template>
@@ -44,12 +38,6 @@ import draggable from "vuedraggable"; // https://github.com/SortableJS/vue.dragg
 export default {
   name: "Home",
   components: { Container, Cat, LoginComp, draggable },
-  methods: {
-    dragEnd() {
-      localStorage.setItem("cats", JSON.stringify(this.$store.state.cats));
-      // console.log(this.$store.state.cats);
-    },
-  },
   async mounted() {
     // https://stackoverflow.com/a/44063445
     const prevCats = JSON.parse(localStorage.getItem("cats")) || [
