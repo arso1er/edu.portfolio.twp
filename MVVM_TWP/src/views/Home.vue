@@ -11,9 +11,40 @@
         <q-card flat bordered class="my-card bg-cyan">
           <q-card-section>
             <div class="row items-center">
-              <router-link to="/cats/add">
-                <q-btn flat icon="add" label="Add another list"
-              /></router-link>
+              <form v-if="adding" @submit.prevent="addCatSubmit">
+                <q-input
+                  outlined
+                  bottom-slots
+                  v-model="addCatName"
+                  label="List name"
+                  bg-color="white"
+                  autofocus
+                >
+                </q-input>
+                <div>
+                  <q-btn flat @click="toggleAdd" :disable="submitting">
+                    Cancel
+                  </q-btn>
+                  <q-btn
+                    flat
+                    color="primary"
+                    :disable="submitting"
+                    :loading="submitting"
+                    @click="addCatSubmit"
+                  >
+                    Submit
+                  </q-btn>
+                </div>
+              </form>
+              <!-- <router-link to="/cats/add" v-else> -->
+              <q-btn
+                flat
+                icon="add"
+                label="Add another list"
+                v-else
+                @click="toggleAdd"
+              />
+              <!-- </router-link> -->
             </div>
           </q-card-section>
         </q-card>
@@ -51,7 +82,7 @@ export default {
 
     const prevCatsFlat = prevCats.map((prevCat) => prevCat.id);
     // console.log(prevCatsFlat);
-    newCats.sort(function (a, b) {
+    newCats.sort((a, b) => {
       // console.log(a);
       // console.log(b);
       // https://stackoverflow.com/a/6974105
@@ -72,6 +103,74 @@ export default {
       set(value) {
         this.$store.dispatch("setCats", value);
       },
+    },
+  },
+  data() {
+    return {
+      adding: false,
+      submitting: false,
+      addCatName: "",
+    };
+  },
+  methods: {
+    toggleAdd() {
+      this.adding = !this.adding;
+    },
+    async addCatSubmit() {
+      this.submitting = true;
+
+      const data = {
+        name: this.addCatName,
+        // description: this.description,
+      };
+
+      try {
+        await this.$store.dispatch("createCat", data);
+        await this.$store.dispatch("getCats");
+        this.addCatName = "";
+        this.submitting = false;
+        this.adding = false;
+        this.$q.notify({
+          progress: true,
+          message: "New list created.",
+          // color: 'primary',
+          type: "positive",
+          actions: [
+            {
+              label: "Dismiss",
+              color: "white",
+              handler: () => {
+                /* ... */
+              },
+            },
+          ],
+        });
+      } catch (error) {
+        let message = "The request failed.";
+        // window.err = error;
+        // console.log(error);
+        this.submitting = false;
+        if (error.response) {
+          message = error.response.data.message || message;
+        }
+        this.$q.notify({
+          progress: true,
+          message: message,
+          html: true,
+          // color: 'primary',
+          type: "negative",
+          timeout: 10000,
+          actions: [
+            {
+              label: "Dismiss",
+              color: "white",
+              handler: () => {
+                /* ... */
+              },
+            },
+          ],
+        });
+      }
     },
   },
 };

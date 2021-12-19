@@ -156,15 +156,23 @@ export default {
     // await this.$store.dispatch("getPosts", this.cat.id);
 
     // https://stackoverflow.com/a/44063445
-    const prevPosts = JSON.parse(
-      localStorage.getItem("posts" + this.cat.id)
-    ) || [...this.$store.state["posts" + this.cat.id]];
+    let prevPosts = JSON.parse(localStorage.getItem("posts" + this.cat.id));
+    if (!prevPosts) {
+      if (this.$store.state["posts" + this.cat.id]) {
+        prevPosts = [...this.$store.state["posts" + this.cat.id]];
+      } else {
+        prevPosts = [];
+      }
+    }
+
     await this.$store.dispatch("getPosts", this.cat.id);
 
-    const newPosts = [...this.$store.state["posts" + this.cat.id]];
+    const newPosts = this.$store.state["posts" + this.cat.id]
+      ? [...this.$store.state["posts" + this.cat.id]]
+      : [];
 
     const prevPostsFlat = prevPosts.map((prevPost) => prevPost.id);
-    newPosts.sort(function (a, b) {
+    newPosts.sort((a, b) => {
       // console.log(a);
       // console.log(b);
       // https://stackoverflow.com/a/6974105
@@ -181,7 +189,7 @@ export default {
   computed: {
     catPosts: {
       get() {
-        return this.$store.state["posts" + this.cat.id];
+        return this.$store.state["posts" + this.cat.id] || [];
       },
       set(value) {
         this.$store.dispatch("setPosts", { catId: this.cat.id, posts: value });
