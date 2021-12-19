@@ -19,8 +19,6 @@
           />
 
           <q-input
-            :rules="[(val) => !!val || 'Content is required']"
-            ref="contentRef"
             v-model="content"
             filled
             clearable
@@ -124,7 +122,13 @@
           </div>
           <div class="q-pa-md">
             <div class="text-h5">Description</div>
-            <div class="q-pt-sm text-justify" v-html="post.content.rendered" />
+            <div
+              class="q-pt-sm text-justify"
+              v-html="
+                post.content.rendered ||
+                '<p>Edit this post to add a description.</p>'
+              "
+            />
             <form v-if="$store.state.user" @submit.prevent="createComment">
               <q-input
                 outlined
@@ -271,9 +275,8 @@ export default {
     },
     async handleSubmit() {
       this.$refs.titleRef.validate();
-      this.$refs.contentRef.validate();
 
-      if (this.$refs.titleRef.hasError || this.$refs.contentRef.hasError) {
+      if (this.$refs.titleRef.hasError) {
         return false;
       }
 

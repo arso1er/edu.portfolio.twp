@@ -13,9 +13,7 @@
         />
 
         <q-input
-          :rules="[(val) => !!val || 'Description is required']"
           type="textarea"
-          ref="descriptionRef"
           v-model="description"
           class="q-mt-sm"
           outlined
@@ -69,9 +67,8 @@ export default {
   methods: {
     async handleSubmit() {
       this.$refs.nameRef.validate();
-      this.$refs.descriptionRef.validate();
 
-      if (this.$refs.nameRef.hasError || this.$refs.descriptionRef.hasError) {
+      if (this.$refs.nameRef.hasError) {
         return false;
       }
 

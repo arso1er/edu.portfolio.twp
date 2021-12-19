@@ -8,6 +8,12 @@
           </router-link>
         </q-toolbar-title>
         <div v-if="$store.state.user">
+          <q-btn
+            stretch
+            flat
+            color="white"
+            :label="$store.state.user.username"
+          />
           <q-btn stretch flat color="white" label="Logout" @click="logout" />
         </div>
         <div v-else>
