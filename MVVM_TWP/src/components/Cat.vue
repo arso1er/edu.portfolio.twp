@@ -58,9 +58,38 @@
     <q-separator />
 
     <q-card-actions>
-      <router-link :to="{ name: 'AddPost', params: { id: cat.id } }">
-        <q-btn flat icon="add_task" label="Add a card" />
-      </router-link>
+      <form v-if="adding" @submit.prevent="addPostSubmit">
+        <q-input
+          outlined
+          bottom-slots
+          v-model="addPostName"
+          label="Card title"
+          bg-color="white"
+          autofocus
+        >
+        </q-input>
+        <div>
+          <q-btn flat @click="toggleAdd" :disable="submitting"> Cancel </q-btn>
+          <q-btn
+            flat
+            color="primary"
+            :disable="submitting"
+            :loading="submitting"
+            @click="addPostSubmit"
+          >
+            Submit
+          </q-btn>
+        </div>
+      </form>
+      <!-- <router-link :to="{ name: 'AddPost', params: { id: cat.id } }"> -->
+      <q-btn
+        flat
+        icon="add_task"
+        label="Add a card"
+        v-else
+        @click="toggleAdd"
+      />
+      <!-- </router-link> -->
     </q-card-actions>
   </q-card>
 </template>
@@ -79,7 +108,11 @@ export default {
     draggable,
   },
   data() {
-    return {};
+    return {
+      adding: false,
+      submitting: false,
+      addPostName: "",
+    };
   },
   methods: {
     async removeCat(id) {
@@ -150,6 +183,75 @@ export default {
         "posts" + this.cat.id,
         JSON.stringify(this.$store.state["posts" + this.cat.id])
       );
+    },
+
+    toggleAdd() {
+      this.adding = !this.adding;
+    },
+    async addPostSubmit() {
+      this.submitting = true;
+
+      const data = {
+        title: this.addPostName,
+        // content: this.content,
+        status: "publish",
+        author: this.$store.state.user.id,
+        comment_status: "open",
+        categories: [+this.cat.id],
+      };
+
+      try {
+        const res = await this.$store.dispatch("createPost", data);
+        // console.log(res);
+        const posts = this.$store.state["posts" + this.cat.id]
+          ? [...this.$store.state["posts" + this.cat.id]]
+          : [];
+        posts.push(res);
+        await this.$store.dispatch("setPosts", { catId: this.cat.id, posts });
+        this.addPostName = "";
+        this.submitting = false;
+        this.adding = false;
+        this.$q.notify({
+          progress: true,
+          message: "New card created.",
+          // color: 'primary',
+          type: "positive",
+          actions: [
+            {
+              label: "Dismiss",
+              color: "white",
+              handler: () => {
+                /* ... */
+              },
+            },
+          ],
+        });
+      } catch (error) {
+        let message = "The request failed.";
+        // window.err = error;
+        // console.log(error);
+        this.submitting = false;
+        if (error.response) {
+          message = error.response.data.message || message;
+        }
+        this.$q.notify({
+          progress: true,
+          message: message,
+          html: true,
+          // color: 'primary',
+          type: "negative",
+          timeout: 10000,
+          actions: [
+            {
+              label: "Dismiss",
+              color: "white",
+              handler: () => {
+                /* ... */
+              },
+            },
+          ],
+        });
+      }
     },
   },
   async mounted() {
