@@ -23,10 +23,10 @@
 define( 'DB_NAME', 'twp_wp' );
 
 /** MySQL database username */
-define( 'DB_USER', 'jefferson' );
+define( 'DB_USER', 'jeff' );
 
 /** MySQL database password */
-define( 'DB_PASSWORD', 'jefferson' );
+define( 'DB_PASSWORD', 'jeff' );
 
 /** MySQL hostname */
 define( 'DB_HOST', 'localhost' );
