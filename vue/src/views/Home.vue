@@ -36,7 +36,6 @@
                   </q-btn>
                 </div>
               </form>
-              <!-- <router-link to="/cats/add" v-else> -->
               <q-btn
                 flat
                 icon="add"
@@ -44,7 +43,6 @@
                 v-else
                 @click="toggleAdd"
               />
-              <!-- </router-link> -->
             </div>
           </q-card-section>
         </q-card>
@@ -76,17 +74,12 @@ export default {
     const prevCats = JSON.parse(localStorage.getItem("cats")) || [
       ...this.$store.state.cats,
     ];
-    // console.log(prevCats);
     await this.$store.dispatch("getCats");
 
     const newCats = [...this.$store.state.cats];
-    // console.log(newCats);
 
     const prevCatsFlat = prevCats.map((prevCat) => prevCat.id);
-    // console.log(prevCatsFlat);
     newCats.sort((a, b) => {
-      // console.log(a);
-      // console.log(b);
       // https://stackoverflow.com/a/6974105
       // https://www.w3schools.com/js/js_array_sort.asp
       if (!prevCatsFlat.includes(a.id) && prevCatsFlat.includes(b.id)) return 1;
@@ -123,7 +116,6 @@ export default {
 
       const data = {
         name: this.addCatName,
-        // description: this.description,
       };
 
       try {
@@ -135,7 +127,6 @@ export default {
         this.$q.notify({
           progress: true,
           message: "New list created.",
-          // color: 'primary',
           type: "positive",
           actions: [
             {
@@ -149,8 +140,6 @@ export default {
         });
       } catch (error) {
         let message = "The request failed.";
-        // window.err = error;
-        // console.log(error);
         this.submitting = false;
         if (error.response) {
           message = error.response.data.message || message;
@@ -159,7 +148,6 @@ export default {
           progress: true,
           message: message,
           html: true,
-          // color: 'primary',
           type: "negative",
           timeout: 10000,
           actions: [
@@ -187,7 +175,6 @@ export default {
     display: flex;
   }
 }
-/* .twp-cats > div .my-card { */
 .my-card {
   align-self: start;
   min-width: 250px;
@@ -199,7 +186,4 @@ export default {
   background: #e0e0e0;
   border-radius: 6px;
 }
-/* .twp-task-wrapper > div > a:not(:last-child) > div {
-  margin-bottom: 12px;
-} */
 </style>

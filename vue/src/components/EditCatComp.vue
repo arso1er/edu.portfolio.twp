@@ -85,7 +85,6 @@ export default {
         this.$q.notify({
           progress: true,
           message: "List updated.",
-          // color: 'primary',
           type: "positive",
           actions: [
             {
@@ -99,8 +98,6 @@ export default {
         });
       } catch (error) {
         let message = "The request failed.";
-        // window.err = error;
-        // console.log(error);
         this.submitting = false;
         if (error.response) {
           message = error.response.data.message || message;
@@ -109,7 +106,6 @@ export default {
           progress: true,
           message: message,
           html: true,
-          // color: 'primary',
           type: "negative",
           timeout: 10000,
           actions: [
@@ -127,7 +123,6 @@ export default {
   },
   async created() {
     const res = await this.$store.dispatch("getCat", this.$route.params.id);
-    // console.log(res);
     this.name = res.name;
     this.description = res.description;
   },

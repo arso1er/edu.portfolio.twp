@@ -24,8 +24,6 @@ export default {
       data,
       headers: { Authorization: `Bearer ${token}` },
     });
-    // console.log(resRegister.data);
-    // await this.login(data);
     return resRegister.data;
   },
   async login(data) {

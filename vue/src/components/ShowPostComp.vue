@@ -82,7 +82,6 @@
         </Modal>
         <router-link to="/">
           <div class="q-mt-md q-mb-md">
-            <!-- <q-icon name="west" size="xs" /> Back to my notes -->
             <q-chip color="teal" text-color="white" icon="west">
               Back to board
             </q-chip>
@@ -200,32 +199,6 @@
                 </div>
               </q-card-section>
             </q-card>
-
-            <!-- <q-card class="my-card q-mb-md" flat bordered>
-              <q-item>
-                <q-item-section avatar>
-                  <q-avatar>
-                    <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
-                  </q-avatar>
-                </q-item-section>
-
-                <q-item-section>
-                  <q-item-label>Title</q-item-label>
-                  <q-item-label caption> Subhead </q-item-label>
-                </q-item-section>
-              </q-item>
-
-              <q-separator />
-
-              <q-card-section>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Cumque,
-                amet!
-                <div>
-                  <q-btn flat>Edit</q-btn>
-                  <q-btn flat>Remove</q-btn>
-                </div>
-              </q-card-section>
-            </q-card> -->
           </div>
         </div>
       </div>
@@ -290,7 +263,6 @@ export default {
             content: this.content,
           },
         });
-        // console.log(res);
         await this.toggleEditFalse();
 
         this.submitting = false;
@@ -298,7 +270,6 @@ export default {
         this.$q.notify({
           progress: true,
           message: "The card has been updated!",
-          // color: 'primary',
           type: "positive",
           actions: [
             {
@@ -312,8 +283,6 @@ export default {
         });
       } catch (error) {
         let message = "The request failed.";
-        // window.err = error;
-        // console.log(error);
         this.submitting = false;
         if (error.response) {
           message = error.response.data.message || message;
@@ -322,7 +291,6 @@ export default {
           progress: true,
           message: message,
           html: true,
-          // color: 'primary',
           type: "negative",
           timeout: 10000,
           actions: [
@@ -346,7 +314,6 @@ export default {
         this.$q.notify({
           progress: true,
           message: "The card has been deleted!",
-          // color: 'primary',
           type: "positive",
           actions: [
             {
@@ -360,8 +327,6 @@ export default {
         });
       } catch (error) {
         let message = "The request failed.";
-        // window.err = error;
-        // console.log(error);
         this.submitting = false;
         if (error.response) {
           message = error.response.data.message || message;
@@ -370,7 +335,6 @@ export default {
           progress: true,
           message: message,
           html: true,
-          // color: 'primary',
           type: "negative",
           timeout: 10000,
           actions: [
@@ -387,7 +351,6 @@ export default {
     },
     async getPost() {
       const res = await this.$store.dispatch("getPost", this.$route.params.id);
-      //   console.log(res);
       this.title = res.title.rendered;
       this.content = res.content.rendered;
       this.post = res;
@@ -396,10 +359,8 @@ export default {
     async createComment() {
       this.submitting = true;
       const data = {
-        // author: this.$store.state.user.id,
         content: this.comment,
         post: this.$route.params.id,
-        // author_avatar_urls: this.$store.state.user.avatar,
       };
 
       try {
@@ -409,7 +370,6 @@ export default {
         this.$q.notify({
           progress: true,
           message: "Comment created.",
-          // color: 'primary',
           type: "positive",
           actions: [
             {
@@ -423,8 +383,6 @@ export default {
         });
       } catch (error) {
         let message = "The request failed.";
-        // window.err = error;
-        // console.log(error);
         this.submitting = false;
         if (error.response) {
           message = error.response.data.message || message;
@@ -433,7 +391,6 @@ export default {
           progress: true,
           message: message,
           html: true,
-          // color: 'primary',
           type: "negative",
           timeout: 10000,
           actions: [
@@ -454,7 +411,6 @@ export default {
         "getComments",
         this.$route.params.id
       );
-      // console.log(res);
       this.comments = res;
     },
     // https://stackoverflow.com/a/6109105
@@ -498,7 +454,6 @@ export default {
         this.$q.notify({
           progress: true,
           message: "The comment has been deleted!",
-          // color: 'primary',
           type: "positive",
           actions: [
             {
@@ -512,8 +467,6 @@ export default {
         });
       } catch (error) {
         let message = "The request failed.";
-        // window.err = error;
-        // console.log(error);
         this.submitting = false;
         if (error.response) {
           message = error.response.data.message || message;
@@ -522,7 +475,6 @@ export default {
           progress: true,
           message: message,
           html: true,
-          // color: 'primary',
           type: "negative",
           timeout: 10000,
           actions: [
@@ -547,10 +499,8 @@ export default {
         content: comment.content.rendered,
       };
       this.toggleModal();
-      // console.log(comment);
     },
     async editCommentSubmit() {
-      // console.log(this.currentComment);
       this.submitting = true;
 
       try {
@@ -560,14 +510,12 @@ export default {
             content: this.currentComment.content,
           },
         });
-        // console.log(res);
         await this.loadComments();
         this.submitting = false;
         this.toggleModal();
         this.$q.notify({
           progress: true,
           message: "The comment has been updated!",
-          // color: 'primary',
           type: "positive",
           actions: [
             {
@@ -581,8 +529,6 @@ export default {
         });
       } catch (error) {
         let message = "The request failed.";
-        // window.err = error;
-        // console.log(error);
         this.submitting = false;
         this.toggleModal();
         if (error.response) {
@@ -592,7 +538,6 @@ export default {
           progress: true,
           message: message,
           html: true,
-          // color: 'primary',
           type: "negative",
           timeout: 10000,
           actions: [

@@ -14,8 +14,6 @@ export default {
         "orderby=id&order=desc",
       headers: { Authorization: `Bearer ${getToken()}` },
     });
-    // console.log(res.data);
-    // window.t = res.data;
     return res.data;
   },
   async create(data) {
@@ -25,17 +23,8 @@ export default {
       data,
       headers: { Authorization: `Bearer ${getToken()}` },
     });
-    // console.log(res.data);
     return res.data;
   },
-  //   async show(id) {
-  //     const res = await axios({
-  //       method: "GET",
-  //       url: apiBaseURL + `/${id}`,
-  //     });
-  //     // console.log(res.data);
-  //     return res.data;
-  //   },
   async update(id, data) {
     const res = await axios({
       method: "POST",
@@ -43,7 +32,6 @@ export default {
       data,
       headers: { Authorization: `Bearer ${getToken()}` },
     });
-    // console.log(res.data);
     return res.data;
   },
   async delete(id) {
@@ -52,7 +40,6 @@ export default {
       url: apiBaseURL + `/${id}?force=true`,
       headers: { Authorization: `Bearer ${getToken()}` },
     });
-    // console.log(res.data);
     return res.data;
   },
 };

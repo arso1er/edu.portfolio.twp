@@ -35,8 +35,6 @@ export default {
   },
   async createCat({ dispatch, commit }, data) {
     const res = await CatsAPI.create(data);
-    // await dispatch("getCat", res.note_id);
-    // await dispatch("getCats");
     return res;
   },
   async getCat({ dispatch, commit }, id) {
@@ -68,8 +66,6 @@ export default {
   },
   async createPost({ dispatch, commit }, data) {
     const res = await PostsAPI.create(data);
-    // await dispatch("getCat", res.note_id);
-    // await dispatch("getCats");
     return res;
   },
   async getPost({ dispatch, commit }, id) {
@@ -98,8 +94,6 @@ export default {
   },
   async createComment({ dispatch, commit }, data) {
     const res = await CommentsAPI.create(data);
-    // await dispatch("getCat", res.note_id);
-    // await dispatch("getCats");
     return res;
   },
   async updateComment({ dispatch, commit }, { id, data }) {

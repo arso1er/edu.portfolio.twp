@@ -14,8 +14,6 @@ export default {
         "orderby=id&order=asc",
       headers: { Authorization: `Bearer ${getToken()}` },
     });
-    // console.log(res.data);
-    // window.t = res.data;
     return res.data;
   },
   async create(data) {
@@ -25,7 +23,6 @@ export default {
       data,
       headers: { Authorization: `Bearer ${getToken()}` },
     });
-    // console.log(res.data);
     return res.data;
   },
   async show(id) {
@@ -34,7 +31,6 @@ export default {
       url: apiBaseURL + `/${id}`,
       headers: { Authorization: `Bearer ${getToken()}` },
     });
-    // console.log(res.data);
     return res.data;
   },
   async update(id, data) {
@@ -44,7 +40,6 @@ export default {
       data,
       headers: { Authorization: `Bearer ${getToken()}` },
     });
-    // console.log(res.data);
     return res.data;
   },
   async delete(id) {
@@ -53,7 +48,6 @@ export default {
       url: apiBaseURL + `/${id}?force=true`,
       headers: { Authorization: `Bearer ${getToken()}` },
     });
-    // console.log(res.data);
     return res.data;
   },
 };

@@ -81,7 +81,6 @@
           </q-btn>
         </div>
       </form>
-      <!-- <router-link :to="{ name: 'AddPost', params: { id: cat.id } }"> -->
       <q-btn
         flat
         icon="add_task"
@@ -89,7 +88,6 @@
         v-else
         @click="toggleAdd"
       />
-      <!-- </router-link> -->
     </q-card-actions>
   </q-card>
 </template>
@@ -123,7 +121,6 @@ export default {
         this.$q.notify({
           progress: true,
           message: "The list has been deleted!",
-          // color: 'primary',
           type: "positive",
           actions: [
             {
@@ -137,8 +134,6 @@ export default {
         });
       } catch (error) {
         let message = "The request failed.";
-        // window.err = error;
-        // console.log(error);
         this.submitting = false;
         if (error.response) {
           message = error.response.data.message || message;
@@ -147,7 +142,6 @@ export default {
           progress: true,
           message: message,
           html: true,
-          // color: 'primary',
           type: "negative",
           timeout: 10000,
           actions: [
@@ -193,7 +187,6 @@ export default {
 
       const data = {
         title: this.addPostName,
-        // content: this.content,
         status: "publish",
         author: this.$store.state.user.id,
         comment_status: "open",
@@ -202,7 +195,6 @@ export default {
 
       try {
         const res = await this.$store.dispatch("createPost", data);
-        // console.log(res);
         const posts = this.$store.state["posts" + this.cat.id]
           ? [...this.$store.state["posts" + this.cat.id]]
           : [];
@@ -214,7 +206,6 @@ export default {
         this.$q.notify({
           progress: true,
           message: "New card created.",
-          // color: 'primary',
           type: "positive",
           actions: [
             {
@@ -228,8 +219,6 @@ export default {
         });
       } catch (error) {
         let message = "The request failed.";
-        // window.err = error;
-        // console.log(error);
         this.submitting = false;
         if (error.response) {
           message = error.response.data.message || message;
@@ -238,7 +227,6 @@ export default {
           progress: true,
           message: message,
           html: true,
-          // color: 'primary',
           type: "negative",
           timeout: 10000,
           actions: [
@@ -255,8 +243,6 @@ export default {
     },
   },
   async mounted() {
-    // await this.$store.dispatch("getPosts", this.cat.id);
-
     // https://stackoverflow.com/a/44063445
     let prevPosts = JSON.parse(localStorage.getItem("posts" + this.cat.id));
     if (!prevPosts) {
@@ -275,8 +261,6 @@ export default {
 
     const prevPostsFlat = prevPosts.map((prevPost) => prevPost.id);
     newPosts.sort((a, b) => {
-      // console.log(a);
-      // console.log(b);
       // https://stackoverflow.com/a/6974105
       // https://www.w3schools.com/js/js_array_sort.asp
       if (!prevPostsFlat.includes(a.id) && prevPostsFlat.includes(b.id))
@@ -285,7 +269,6 @@ export default {
         return -1;
       return prevPostsFlat.indexOf(a.id) - prevPostsFlat.indexOf(b.id);
     });
-    // console.log(newPosts);
     this.$store.dispatch("setPosts", { catId: this.cat.id, posts: newPosts });
   },
   computed: {

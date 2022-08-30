@@ -35,10 +35,6 @@
           label="Password"
         />
 
-        <!-- <q-card flat bordered class="q-mt-sm">
-          <q-editor v-model="note.content" min-height="5rem" />
-        </q-card> -->
-
         <div class="q-mt-md">
           <q-btn color="grey" to="/" type="reset" :disable="submitting">
             Cancel
@@ -95,10 +91,6 @@ export default {
         return false;
       }
 
-      // console.log(this.username);
-      // console.log(this.email);
-      // console.log(this.password);
-
       this.submitting = true;
 
       const data = {
@@ -110,15 +102,11 @@ export default {
 
       try {
         const res = await AuthAPI.register(data);
-        // const logRes = await AuthAPI.login(data);
-        // console.log(res);
-        // window.t = res;
         this.submitting = false;
         this.$router.push(`/login`);
         this.$q.notify({
           progress: true,
           message: "User created. Please log in.",
-          // color: 'primary',
           type: "positive",
           actions: [
             {
@@ -141,7 +129,6 @@ export default {
         this.$q.notify({
           progress: true,
           message: message,
-          // color: 'primary',
           type: "negative",
           timeout: 10000,
           actions: [
